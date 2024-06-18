@@ -1,2 +1,3 @@
 # TOP_Blog-API-backend
-Back-end api app for Blog site
+
+A blog post backend for a front end Website. Following standards I learned from studying from (The Odin Project(TOP))[https://www.theodinproject.com/]
