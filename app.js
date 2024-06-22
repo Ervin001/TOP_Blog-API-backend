@@ -6,16 +6,32 @@ const bodyParser = require('body-parser');
 
 // routes
 // import blogs from './routes/blog.js';
-const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
+const blogsRouter = require('./routes/blogs');
+const usersRouter = require('./routes/users');
 
 const app = express();
+
+// set up mongoose connection
+const mongoose = require('mongoose');
+mongoose.set('strictQuery', false);
+
+main().catch((err) => console.log(err));
+
+async function main() {
+  console.log('Connected to DB');
+  await mongoose.connect(process.env.MONGODB_URI);
+}
 
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// routes
+app.use('/auth', authRouter);
+app.use('/blogs', blogsRouter);
+app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
