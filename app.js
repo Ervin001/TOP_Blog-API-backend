@@ -28,6 +28,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// red to blogs
+// Redirect root URL to /blogs
+app.get('/', (req, res) => {
+  res.redirect('/blogs');
+});
+
 // routes
 app.use('/auth', authRouter);
 app.use('/blogs', blogsRouter);
@@ -46,7 +52,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ message: err.msg });
 });
 
 const port = process.env.PORT || 3001;
