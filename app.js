@@ -28,7 +28,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// red to blogs
 // Redirect root URL to /blogs
 app.get('/', (req, res) => {
   res.redirect('/blogs');
