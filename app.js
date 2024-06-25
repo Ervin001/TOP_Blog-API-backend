@@ -3,12 +3,10 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 
 // routes
-// import blogs from './routes/blog.js';
-const authRouter = require('./routes/auth');
-const blogsRouter = require('./routes/blogs');
-const usersRouter = require('./routes/users');
+const apiRouter = require('./routes/api');
 
 const app = express();
 
@@ -34,9 +32,7 @@ app.get('/', (req, res) => {
 });
 
 // routes
-app.use('/auth', authRouter);
-app.use('/blogs', blogsRouter);
-app.use('/users', usersRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
