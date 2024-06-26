@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  email: { type: String, maxLenght: 28, unique: true },
+  email: { type: String, maxLenght: 28, unique: true, required: true },
   password: { type: String, require: true, maxLenght: 75 },
   githubId: { type: String },
   githubToken: { type: String },

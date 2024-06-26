@@ -4,6 +4,8 @@ const path = require('path');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
 
 // routes
 const apiRouter = require('./routes/api');
