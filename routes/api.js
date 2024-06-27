@@ -1,17 +1,21 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
 const blogs_controller = require('../controllers/blogsController');
 const users_controller = require('../controllers/usersController');
 const auth_controller = require('../controllers/authController');
 
 // -------------- Auth -------------
-
 // Get sign in form
 router.get('/auth/login', auth_controller.getLogin);
 
 // Post sign in form
-router.post('/auth/login', auth_controller.postLogin);
+router.post(
+  '/auth/login',
+  passport.authenticate('local', { session: false }),
+  auth_controller.postLogin
+);
 
 //------------- Routes for Blogs -----------------
 // Home

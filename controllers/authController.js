@@ -7,6 +7,13 @@ exports.getLogin = asyncHandler(async (req, res) => {
 });
 
 //  Post Sign in
-exports.postLogin = asyncHandler(async (req, res) => {
-  res.json({ message: 'Post Log in' });
+exports.postLogin = asyncHandler(async (req, res, next) => {
+  // req.logIn(user, function (err) {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //   return res.json({ message: 'Post Log in' });
+  // });
+  console.log(req);
+  res.json(req.body);
 });

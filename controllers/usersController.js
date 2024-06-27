@@ -6,6 +6,7 @@ const User = require('../models/user');
 
 // Get users
 exports.getUser = asyncHandler(async (req, res) => {
+  const user = await User.findOne;
   return res.json({ message: 'Get user' });
 });
 
@@ -36,24 +37,32 @@ exports.postUser = [
       'Password can only contain letters, numbers, hyphens, and underscores'
     )
     .escape(),
+
   asyncHandler(async (req, res) => {
+    // get errors
+    const errors = validationResult(req);
+    // obj for separating errors
+    if (!errors.isEmpty()) {
+      const fieldErrors = {};
+      errors.array().forEach((error) => {
+        fieldErrors[error.path] = error.msg;
+      });
+
+      return res.status(400).json({
+        status: 'error',
+        message: 'Validation failed',
+        fieldErrors,
+      });
+    }
+
+    // everything worked
     const pssw = req.body.password;
     bcrypt.hash(pssw, +process.env.BCRYPT_SALT, async (err, hashedPassword) => {
       if (err) {
         console.error('Error hashing password', err);
-        return res.status(500).send('Internal Server Error');
-      }
-
-      // get errors
-      const errors = validationResult(req);
-      // obj for separating errors
-      if (!errors.isEmpty()) {
-        const fieldErrors = {};
-        errors.array().forEach((error) => {
-          fieldErrors[error.path] = error.msg;
-        });
-        console.log(fieldErrors);
-        return res.status(400).json({ fieldErrors });
+        return res
+          .status(500)
+          .json({ status: 'error', message: 'Internal Server Error' });
       }
 
       // Create users
@@ -63,12 +72,12 @@ exports.postUser = [
       });
 
       // saves user to db
-      // await user.save();
+      await user.save();
 
-      console.log(user);
-      return res.json("{message: 'some data}");
-      // res.json({ message: req.body.username });
-      // return res.json({ message: `Data:${JSON.stringify(req.body)}` });
+      return res.json({
+        status: 'success',
+        message: 'User created successfully',
+      });
     });
   }),
 ];

@@ -4,6 +4,7 @@ const path = require('path');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
@@ -14,6 +15,7 @@ const app = express();
 
 // set up mongoose connection
 const mongoose = require('mongoose');
+const User = require('./models/user');
 mongoose.set('strictQuery', false);
 
 main().catch((err) => console.log(err));
@@ -23,6 +25,42 @@ async function main() {
   await mongoose.connect(process.env.MONGODB_URI);
 }
 
+// passport
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: 'email',
+    },
+    async (email, password, done) => {
+      try {
+        // case insensitive search
+        const regex = new RegExp(`^${email}$`, 'i');
+        const user = await User.findOne({ email: regex });
+        if (!email) {
+          console.log('no user found');
+          return done(null, false, {
+            message: 'Incorrect email',
+            errorType: 'email',
+          });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+          console.log('password does not match');
+          return done(null, false, {
+            message: 'Incorrect password',
+            errorType: 'password',
+          });
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
+);
+
+app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
