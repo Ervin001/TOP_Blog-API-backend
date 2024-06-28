@@ -23,7 +23,33 @@ main().catch((err) => console.log(err));
 async function main() {
   console.log('Connected to DB');
   await mongoose.connect(process.env.MONGODB_URI);
+  initAdmin();
 }
+
+// create admin
+const initAdmin = async () => {
+  try {
+    const adminUser = await User.findOne({ email: process.env.ADMIN_EMAIL });
+
+    if (!adminUser) {
+      const hashedPassword = bcrypt.hashSync(process.env.ADMIN_PASSWORD);
+      const newUser = new User({
+        email: process.env.ADMIN_EMAIL,
+        password: hashedPassword,
+      });
+
+      // add the admin role
+      newUser.roles.push('admin');
+
+      // save user to db
+      await newUser.save();
+    } else {
+      return;
+    }
+  } catch (err) {
+    console.error('Error initializing admin user', err);
+  }
+};
 
 // passport
 passport.use(
@@ -36,8 +62,7 @@ passport.use(
         // case insensitive search
         const regex = new RegExp(`^${email}$`, 'i');
         const user = await User.findOne({ email: regex });
-        if (!email) {
-          console.log('no user found');
+        if (!user) {
           return done(null, false, {
             message: 'Incorrect email',
             errorType: 'email',
@@ -46,7 +71,6 @@ passport.use(
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
-          console.log('password does not match');
           return done(null, false, {
             message: 'Incorrect password',
             errorType: 'password',

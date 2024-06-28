@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 //  Get Sign in
 exports.getLogin = asyncHandler(async (req, res) => {
@@ -8,12 +9,16 @@ exports.getLogin = asyncHandler(async (req, res) => {
 
 //  Post Sign in
 exports.postLogin = asyncHandler(async (req, res, next) => {
-  // req.logIn(user, function (err) {
-  //   if (err) {
-  //     return next(err);
-  //   }
-  //   return res.json({ message: 'Post Log in' });
-  // });
-  console.log(req);
-  res.json(req.body);
+  const user = req.user;
+
+  jwt.sign(
+    { user },
+    process.env.JWT_SECRET,
+    { expiresIn: '3d' },
+    (err, token) => {
+      res.json({
+        token,
+      });
+    }
+  );
 });
