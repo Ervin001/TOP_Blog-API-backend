@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken');
-
 // verify token
-function verifyToken(req, res, next) {
+function extractToken(req, res, next) {
   // get auth header value
   const bearerHeader = req.headers['authorization'];
 
@@ -17,8 +15,12 @@ function verifyToken(req, res, next) {
     next();
   } else {
     // forbidden
-    res.sendStatus(403);
+    res
+      .status(403)
+      .json({
+        message: 'Forbidden: Authorization header missing or malformed',
+      });
   }
 }
 
-module.exports = verifyToken;
+module.exports = extractToken;

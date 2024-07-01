@@ -13,7 +13,7 @@ const UserSchema = new Schema({
 
 // Virtual for ID
 UserSchema.virtual('url').get(function () {
-  return `/${this._id}`;
+  return `/api/users/${this._id}`;
 });
 
 const User = mongoose.model('User', UserSchema);

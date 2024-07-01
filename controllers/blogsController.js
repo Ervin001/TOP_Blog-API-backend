@@ -8,22 +8,16 @@ exports.index = asyncHandler(async (req, res) => {
   res.json({ message: 'This is the index' });
 });
 
-exports.getPosts = asyncHandler(async (req, res) => {
-  res.json({ message: 'Posts for all posts' });
-});
+exports.getPosts = asyncHandler(async (req, res) => {});
 
 exports.getPost = asyncHandler(async (req, res) => {
-  res.json({ message: 'Posts for single posts' });
+  res.json({ message: 'get for single posts' });
 });
 
 //
 exports.postPost = asyncHandler(async (req, res) => {
-  jwt.verify(req.token, process.env.JWT_SECRET, (err, authData) => {
-    if (err) {
-      res.sendStatus(403);
-    } else {
-      res.json({ message: 'Post created', authData });
-    }
+  res.json({
+    message: 'Post for stingle pos',
   });
 });
 
