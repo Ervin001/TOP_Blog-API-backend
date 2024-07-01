@@ -15,8 +15,6 @@ const checkAdmin = require('../middleware/checkAdminMiddleware');
 const authFromJwtMiddleware = [extractToken, verifyToken, checkAdmin];
 
 // -------------- Auth -------------
-// Get sign in form
-router.get('/auth/login', auth_controller.getLogin);
 
 router.post('/auth/login', authenticateLocal, auth_controller.postLogin);
 
@@ -25,6 +23,7 @@ router.post('/auth/login', authenticateLocal, auth_controller.postLogin);
 router.get('/', blogs_controller.index);
 
 // GET all blogs
+
 router.get('/blogs', blogs_controller.getPosts);
 
 // GET single blog
