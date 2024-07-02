@@ -4,10 +4,26 @@ const { body, matchedData, validationResult } = require('express-validator');
 require('dotenv').config();
 const User = require('../models/user');
 
-// Get users
+// Get user
 exports.getUser = asyncHandler(async (req, res) => {
-  const user = await User.findOne;
-  return res.json({ message: 'Get user' });
+  const email = req.body.email;
+
+  // Handle case when no email)
+  if (!email) res.status(400).json({ message: 'Email is required' });
+
+  const user = await User.findOne({ email });
+  // Incase of no user
+  if (!user) res.status(404).json({ message: 'User not found' });
+
+  res.status(200).json(user);
+});
+
+// for experimental use(tempt route)
+exports.getUsers = asyncHandler(async (req, res) => {
+  console.log(req.body);
+
+  const users = await User.find({});
+  res.status(200).json({ users });
 });
 
 // Post users (create user)

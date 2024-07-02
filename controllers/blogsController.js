@@ -1,34 +1,37 @@
+const { Router } = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
-exports.index = asyncHandler(async (req, res) => {
-  console.log('test');
-  // return a json response
-  res.json({ message: 'This is the index' });
+// get blogs
+exports.blogs = asyncHandler(async (req, res) => {
+  res.json({ message: 'GET all blogs' });
 });
 
-exports.getPosts = asyncHandler(async (req, res) => {});
-
-exports.getPost = asyncHandler(async (req, res) => {
-  res.json({ message: 'get for single posts' });
+exports.blog = asyncHandler(async (req, res) => {
+  res.json({ message: 'GET single blog' });
 });
 
-//
-exports.postPost = asyncHandler(async (req, res) => {
-  res.json({
-    message: 'Post for stingle pos',
-  });
+exports.postBlog = asyncHandler(async (req, res) => {
+  res.json({ message: 'POST Blog' });
 });
 
-exports.updatePost = asyncHandler(async (req, res) => {
-  res.json({ message: 'Update for single posts' });
+exports.deleteBlog = asyncHandler(async (req, res) => {
+  res.json({ message: 'Delete Blog' });
 });
 
-exports.deletePost = asyncHandler(async (req, res) => {
-  res.json({ message: 'Delete for single posts' });
+exports.updateBlog = asyncHandler(async (req, res) => {
+  res.json({ message: 'PUT Blog' });
 });
 
-exports.deletePosts = asyncHandler(async (req, res) => {
-  res.json({ message: 'Delete for all posts' });
+exports.postCategory = asyncHandler(async (req, res) => {
+  res.json({ message: 'POST category' });
+});
+
+exports.deleteCategory = asyncHandler(async (req, res) => {
+  res.json({ message: 'DELETE category' });
+});
+
+exports.updateCategory = asyncHandler(async (req, res) => {
+  res.json({ message: 'PUT category' });
 });

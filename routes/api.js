@@ -4,7 +4,7 @@ const passport = require('passport');
 
 // controllers
 const blogs_controller = require('../controllers/blogsController');
-const users_controller = require('../controllers/usersController');
+// const users_controller = require('../controllers/usersController');
 const auth_controller = require('../controllers/authController');
 
 // middleware
@@ -14,60 +14,62 @@ const authenticateLocal = require('../middleware/authLocalMiddleware');
 const checkAdmin = require('../middleware/checkAdminMiddleware');
 const authFromJwtMiddleware = [extractToken, verifyToken, checkAdmin];
 
-// -------------- Auth -------------
+// -------------- Viewer Website ------------- //
 
-router.post('/auth/login', authenticateLocal, auth_controller.postLogin);
+// Get all Blogs
+router.get('/blogs', blogs_controller.blogs);
 
-//------------- Routes for Blogs -----------------
-// Home
-router.get('/', blogs_controller.index);
+// Get individual blog
+router.get('/blogs/:blogId', blogs_controller.blog);
 
-// GET all blogs
+// Get Categories (future)
+// router.get('/blogs/categories', blogs_controller.categories);
 
-router.get('/blogs', blogs_controller.getPosts);
+// Get category (future)
+// router.get('/blogs/category/:categoryId', blogs_controller.category);
 
-// GET single blog
-router.get('/blogs/:blogId', blogs_controller.getPost);
+// -------------- Viewer Website ------------- //
 
-// Posts single blog
-router.post('/blogs', authFromJwtMiddleware, blogs_controller.postPost);
+// Create new blog
+router.post('/blogs', authFromJwtMiddleware, blogs_controller.postBlog);
+
+// Delete single blog
+router.delete(
+  '/blogs/:blogId',
+  authFromJwtMiddleware,
+  blogs_controller.deleteBlog
+);
 
 // Update single blog
 router.put(
   '/blogs/:blogId',
   authFromJwtMiddleware,
-  blogs_controller.updatePost
+  blogs_controller.updateBlog
 );
 
-// Delete blog
-router.delete(
-  '/blogs/:blogId',
+// Create new category
+router.post(
+  '/blogs/categories',
   authFromJwtMiddleware,
-  blogs_controller.deletePost
+  blogs_controller.postCategory
 );
 
-// Delete all blogs
-router.delete('/blogs', authFromJwtMiddleware, blogs_controller.deletePosts);
+// Delete category
+router.delete(
+  '/blogs/categories/:categoryId',
+  authFromJwtMiddleware,
+  blogs_controller.deleteCategory
+);
 
-// ------------ User Routes -------------------
-// Get user
-router.get('/users/:userId', authFromJwtMiddleware, users_controller.getUser);
-
-// Create user
-router.post('/users', users_controller.postUser);
-
-// Update user
+// Update Category
 router.put(
-  '/users/:userId',
+  '/blogs/categories/:category',
   authFromJwtMiddleware,
-  users_controller.updateUser
+  blogs_controller.updateCategory
 );
 
-// Delete user
-router.delete(
-  '/users/:userId',
-  authFromJwtMiddleware,
-  users_controller.deleteUser
-);
+// -------------- Auth -------------
+
+router.post('/auth/login', authenticateLocal, auth_controller.postLogin);
 
 module.exports = router;
