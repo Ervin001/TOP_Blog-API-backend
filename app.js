@@ -36,6 +36,7 @@ const initAdmin = async () => {
       const newUser = new User({
         email: process.env.ADMIN_EMAIL,
         password: hashedPassword,
+        name: process.env.ADMIN_NAME,
       });
 
       // add the admin role
@@ -86,8 +87,8 @@ passport.use(
 
 app.use(passport.initialize());
 app.use(bodyParser.json());
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Redirect root URL to /blogs

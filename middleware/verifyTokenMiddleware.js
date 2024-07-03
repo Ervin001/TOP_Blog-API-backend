@@ -7,7 +7,10 @@ function verifyToken(req, res, next) {
     if (err) {
       return res
         .status(403)
-        .json({ message: 'Forbidden: Invalid or expired token' });
+        .json({
+          status: 'error',
+          message: 'Forbidden: Invalid or expired token',
+        });
     }
     // valid token, attach decoded data
     req.user = authData.user;

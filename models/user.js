@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  email: { type: String, maxLenght: 28, unique: true, required: true },
-  password: { type: String, require: true, maxLenght: 75 },
+  email: { type: String, maxLength: 30, unique: true, required: true },
+  password: { type: String, require: true, maxLength: 75 },
+  name: { type: String, required: true, maxLength: 30, unique: true },
   githubId: { type: String },
   githubToken: { type: String },
   avatar: { type: String },
   roles: { type: [String], default: ['guest'] },
+  blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
 });
 
 // Virtual for ID

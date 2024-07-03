@@ -20,8 +20,6 @@ exports.getUser = asyncHandler(async (req, res) => {
 
 // for experimental use(tempt route)
 exports.getUsers = asyncHandler(async (req, res) => {
-  console.log(req.body);
-
   const users = await User.find({});
   res.status(200).json({ users });
 });

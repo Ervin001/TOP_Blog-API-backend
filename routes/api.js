@@ -17,10 +17,10 @@ const authFromJwtMiddleware = [extractToken, verifyToken, checkAdmin];
 // -------------- Viewer Website ------------- //
 
 // Get all Blogs
-router.get('/blogs', blogs_controller.blogs);
+router.get('/blogs', blogs_controller.getBlogs);
 
 // Get individual blog
-router.get('/blogs/:blogId', blogs_controller.blog);
+router.get('/blogs/:blogId', blogs_controller.getBlog);
 
 // Get Categories (future)
 // router.get('/blogs/categories', blogs_controller.categories);
