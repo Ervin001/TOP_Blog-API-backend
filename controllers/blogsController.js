@@ -17,7 +17,7 @@ exports.getBlogs = asyncHandler(async (req, res) => {
   // Calculate skip
   const skip = (pageNumber - 1) * limit;
 
-  // Fetch total count of blogs (optional, for pagination metadata)
+  // Fetch total count of blogs
   const totalBlogs = await Blog.countDocuments({});
 
   // calculate total pages
@@ -77,7 +77,7 @@ exports.postBlog = [
     .withMessage('Img path must be filled')
     .custom((value) => {
       if (typeof value !== 'string') {
-        throw new Error('Must be a string');
+        throw new Error('Img path must be a string');
       }
       // user might not have correct img format
       if (!value.match(/\.(jpg|jpeg|png|gif)$/)) {
