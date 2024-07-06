@@ -2,6 +2,7 @@ const { Router } = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -41,7 +42,28 @@ exports.getBlogs = asyncHandler(async (req, res) => {
 });
 
 exports.getBlog = asyncHandler(async (req, res) => {
-  res.json({ message: 'GET single blog' });
+  const { blogId } = req.params;
+
+  // no blogId
+  if (!blogId) {
+    return res
+      .status(400)
+      .json({ status: 'error', message: 'BlogId is required' });
+  }
+
+  // check if valid mongoStr
+  if (!mongoose.Types.ObjectId.isValid(blogId)) {
+    res.status(400).json({ status: 'error', message: 'Invalid BlogId' });
+  }
+
+  const blog = await Blog.findById(blogId);
+
+  if (!blog) {
+    // incorrect id
+    res.status(404).json({ status: 'error', message: 'Blog not found' });
+  }
+
+  res.status(200).json({ status: 'success', blog });
 });
 
 exports.postBlog = [
