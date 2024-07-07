@@ -10,8 +10,8 @@ const auth_controller = require('../controllers/authController');
 // middleware
 const extractToken = require('../middleware/extractTokenMiddleware');
 const verifyToken = require('../middleware/verifyTokenMiddleware');
-const authenticateLocal = require('../middleware/authLocalMiddleware');
 const checkAdmin = require('../middleware/checkAdminMiddleware');
+const authenticateLocal = require('../middleware/authLocalMiddleware');
 const authFromJwtMiddleware = [extractToken, verifyToken, checkAdmin];
 
 // -------------- Viewer Website ------------- //

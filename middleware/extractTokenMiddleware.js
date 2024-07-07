@@ -16,7 +16,7 @@ function extractToken(req, res, next) {
   } else {
     // forbidden
     res.status(403).json({
-      status: error,
+      status: 'error',
       message: 'Forbidden: Authorization header missing or malformed',
     });
   }

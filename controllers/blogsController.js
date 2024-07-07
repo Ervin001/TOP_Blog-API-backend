@@ -41,19 +41,16 @@ exports.getBlogs = asyncHandler(async (req, res) => {
   });
 });
 
+// get blog
 exports.getBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.params;
 
-  // no blogId
-  if (!blogId) {
-    return res
-      .status(400)
-      .json({ status: 'error', message: 'BlogId is required' });
-  }
-
-  // check if valid mongoStr
-  if (!mongoose.Types.ObjectId.isValid(blogId)) {
-    res.status(400).json({ status: 'error', message: 'Invalid BlogId' });
+  // check if Id and if it is valid
+  if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'BlogId is required and must be valid',
+    });
   }
 
   const blog = await Blog.findById(blogId);
@@ -66,6 +63,7 @@ exports.getBlog = asyncHandler(async (req, res) => {
   res.status(200).json({ status: 'success', blog });
 });
 
+// post blog
 exports.postBlog = [
   // validate and sanitize fields
   body('title')
@@ -109,7 +107,7 @@ exports.postBlog = [
     })
     .escape(),
 
-  body('published').toBoolean(),
+  body('published').isBoolean(),
 
   asyncHandler(async (req, res) => {
     // handle errors
@@ -162,13 +160,130 @@ exports.postBlog = [
   }),
 ];
 
+// delete blog
 exports.deleteBlog = asyncHandler(async (req, res) => {
-  res.json({ message: 'Delete Blog' });
+  // get blog Id
+  const { blogId } = req.params;
+
+  // check if Id and if it is valid
+  if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'BlogId is required and must be valid',
+    });
+  }
+
+  // delete blog
+  const blog = await Blog.findByIdAndDelete(blogId);
+
+  // if del failed
+  if (!blog) {
+    return res
+      .status(400)
+      .json({ status: 'error', message: 'Failed to delete' });
+  }
+
+  // all good blog deleted
+  res.json({ status: 'success', message: 'Deleted Blog' });
 });
 
-exports.updateBlog = asyncHandler(async (req, res) => {
-  res.json({ message: 'PUT Blog' });
-});
+exports.updateBlog = [
+  // validate and sanitize fields
+  body('title')
+    .trim()
+    .optional('undefined')
+    .isLength({ min: 1 })
+    .withMessage('Title must be filled')
+    .escape(),
+
+  body('subtitle')
+    .trim()
+    .optional('undefined')
+    .isString()
+    .withMessage('Subtitle must be a string')
+    .escape(),
+
+  body('teaser')
+    .trim()
+    .optional('undefined')
+    .isString()
+    .withMessage('Teaser must be a string')
+    .escape(),
+
+  body('content')
+    .trim()
+    .optional('undefined')
+    .isString()
+    .withMessage('Content must be a string')
+    .escape(),
+
+  body('comments')
+    .optional('undefined')
+    .isArray()
+    .withMessage('Comments must be in array'),
+
+  body('featuredImgMedia')
+    .optional('undefined')
+    .isLength({ min: 1 })
+    .withMessage('Img path must be filled')
+    .custom((value) => {
+      if (typeof value !== 'string') {
+        throw new Error('Img path must be a string');
+      }
+      // user might not have correct img format
+      if (!value.match(/\.(jpg|jpeg|png|gif)$/)) {
+        throw new Error('Invalid image format');
+      }
+      return true;
+    })
+    .escape(),
+
+  body('published').optional('undefined').isBoolean(),
+
+  asyncHandler(async (req, res) => {
+    // handle errors
+    const errors = validationResult(req);
+    // for better error readability
+    const fieldErrors = {};
+
+    if (!errors.isEmpty()) {
+      errors.array().forEach((error) => {
+        fieldErrors[error.path] = error.msg;
+      });
+
+      return res.status(400).json({ status: 'error', fieldErrors });
+    }
+    // get blog Id
+    const { blogId } = req.params;
+
+    // check if Id and if it is valid
+    if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Blog is required and must be valid',
+      });
+    }
+
+    // object of changes
+    const updates = req.body;
+
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      { $set: updates },
+      { runValidators: true, new: true }
+    );
+
+    // if update failed
+    if (!blog) {
+      res.status(400).json({ status: 'error', message: 'Failed to update' });
+    }
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Updated Blog',
+    });
+  }),
+];
 
 exports.postCategory = asyncHandler(async (req, res) => {
   res.json({ message: 'POST category' });
