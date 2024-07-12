@@ -96,6 +96,7 @@ exports.postUser = [
   }),
 ];
 
+// todo implement this in a future update
 // Put users
 exports.updateUser = asyncHandler(async (req, res) => {
   res.json({ message: 'Put user' });

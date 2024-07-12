@@ -99,6 +99,11 @@ exports.postBlog = [
     .isArray()
     .withMessage('Comments must be in array'),
 
+  body('categories')
+    .optional('undefined')
+    .isArray()
+    .withMessage('Categories must be in array'),
+
   body('featuredImgMedia')
     .optional('undefined')
     .isLength({ min: 1 })
@@ -231,6 +236,11 @@ exports.updateBlog = [
     .optional('undefined')
     .isArray()
     .withMessage('Comments must be in array'),
+
+  body('categories')
+    .optional('undefined')
+    .isArray()
+    .withMessage('Categories must be in array'),
 
   body('featuredImgMedia')
     .optional('undefined')
