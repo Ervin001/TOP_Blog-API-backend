@@ -47,27 +47,6 @@ router.put(
   blogs_controller.updateBlog
 );
 
-// Create new category
-router.post(
-  '/blogs/categories',
-  authFromJwtMiddleware,
-  blogs_controller.postCategory
-);
-
-// Delete category
-router.delete(
-  '/blogs/categories/:categoryId',
-  authFromJwtMiddleware,
-  blogs_controller.deleteCategory
-);
-
-// Update Category
-router.put(
-  '/blogs/categories/:category',
-  authFromJwtMiddleware,
-  blogs_controller.updateCategory
-);
-
 // -------------- Auth -------------
 
 router.post('/auth/login', authenticateLocal, auth_controller.postLogin);

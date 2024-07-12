@@ -68,11 +68,13 @@ exports.postBlog = [
   // validate and sanitize fields
   body('title')
     .trim()
+    .optional('undefined')
     .isLength({ min: 1 })
     .withMessage('Title must be filled')
     .escape(),
 
   body('subtitle')
+    .optional('undefined')
     .trim()
     .isString()
     .withMessage('Subtitle must be a string')
@@ -80,19 +82,25 @@ exports.postBlog = [
 
   body('teaser')
     .trim()
+    .optional('undefined')
     .isString()
     .withMessage('Teaser must be a string')
     .escape(),
 
   body('content')
     .trim()
+    .optional('undefined')
     .isString()
     .withMessage('Content must be a string')
     .escape(),
 
-  body('comments').isArray().withMessage('Comments must be in array'),
+  body('comments')
+    .optional('undefined')
+    .isArray()
+    .withMessage('Comments must be in array'),
 
   body('featuredImgMedia')
+    .optional('undefined')
     .isLength({ min: 1 })
     .withMessage('Img path must be filled')
     .custom((value) => {
@@ -107,7 +115,7 @@ exports.postBlog = [
     })
     .escape(),
 
-  body('published').isBoolean(),
+  body('published').isBoolean().optional('undefined'),
 
   asyncHandler(async (req, res) => {
     // handle errors
@@ -136,6 +144,7 @@ exports.postBlog = [
       content,
       comments,
       featuredImgMedia,
+      categories,
       published,
     } = req.body;
 
@@ -148,6 +157,7 @@ exports.postBlog = [
       content,
       comments,
       featuredImgMedia,
+      categories,
       published,
     });
 
@@ -284,15 +294,3 @@ exports.updateBlog = [
     });
   }),
 ];
-
-exports.postCategory = asyncHandler(async (req, res) => {
-  res.json({ message: 'POST category' });
-});
-
-exports.deleteCategory = asyncHandler(async (req, res) => {
-  res.json({ message: 'DELETE category' });
-});
-
-exports.updateCategory = asyncHandler(async (req, res) => {
-  res.json({ message: 'PUT category' });
-});

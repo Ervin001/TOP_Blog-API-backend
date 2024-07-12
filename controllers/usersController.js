@@ -100,8 +100,3 @@ exports.postUser = [
 exports.updateUser = asyncHandler(async (req, res) => {
   res.json({ message: 'Put user' });
 });
-
-// Delete users
-exports.deleteUser = asyncHandler(async (req, res) => {
-  res.json({ message: 'Put user' });
-});

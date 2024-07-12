@@ -12,6 +12,7 @@ const BlogSchema = new Schema(
     content: { type: String }, // Stores rich text
     comments: [{ body: String, date: Date }],
     featuredImgMedia: { type: String, required: true },
+    categories: [{ type: String, minlength: 2 }],
     published: { type: Boolean, default: false },
   },
   { timestamps: true }
