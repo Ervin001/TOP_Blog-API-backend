@@ -7,11 +7,27 @@ const jwt = require('jsonwebtoken');
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+};
 
 // routes
 const apiRouter = require('./routes/api');
 
 const app = express();
+
+// cors
+app.use(cors());
+// rate limiter
+const Ratelimit = require('express-rate-limit');
+const limiter = Ratelimit({
+  windowsMs: 1 * 60 * 100,
+  max: 150,
+});
+
+app.use(limiter);
 
 // set up mongoose connection
 const mongoose = require('mongoose');
@@ -21,7 +37,6 @@ mongoose.set('strictQuery', false);
 main().catch((err) => console.log(err));
 
 async function main() {
-  console.log('Connected to DB');
   await mongoose.connect(process.env.MONGODB_URI);
   initAdmin();
 }
