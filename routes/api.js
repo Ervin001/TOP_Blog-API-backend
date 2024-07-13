@@ -22,12 +22,6 @@ router.get('/blogs', blogs_controller.getBlogs);
 // Get individual blog
 router.get('/blogs/:blogId', blogs_controller.getBlog);
 
-// Get Categories (future)
-// router.get('/blogs/categories', blogs_controller.categories);
-
-// Get category (future)
-// router.get('/blogs/category/:categoryId', blogs_controller.category);
-
 // -------------- Viewer Website ------------- //
 
 // Create new blog
