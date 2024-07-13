@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.ORIGIN_URI,
 };
 
 // routes
