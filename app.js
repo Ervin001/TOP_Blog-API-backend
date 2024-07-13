@@ -108,7 +108,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Redirect root URL to /blogs
 app.get('/', (req, res) => {
-  res.redirect('/blogs');
+  res.redirect('api/blogs');
 });
 
 // routes
