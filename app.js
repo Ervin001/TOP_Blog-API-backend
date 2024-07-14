@@ -99,12 +99,13 @@ passport.use(
     }
   )
 );
-
+// static for blogs images
 app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/blogImages', express.static(path.join(__dirname, 'blogImages')));
 
 // Redirect root URL to /api/blogs
 app.get('/', (req, res) => {

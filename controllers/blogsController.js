@@ -68,13 +68,11 @@ exports.postBlog = [
   // validate and sanitize fields
   body('title')
     .trim()
-    .optional('undefined')
     .isLength({ min: 1 })
     .withMessage('Title must be filled')
     .escape(),
 
   body('subtitle')
-    .optional('undefined')
     .trim()
     .isString()
     .withMessage('Subtitle must be a string')
@@ -82,14 +80,12 @@ exports.postBlog = [
 
   body('teaser')
     .trim()
-    .optional('undefined')
     .isString()
     .withMessage('Teaser must be a string')
     .escape(),
 
   body('content')
     .trim()
-    .optional('undefined')
     .isString()
     .withMessage('Content must be a string')
     .escape(),
@@ -103,22 +99,6 @@ exports.postBlog = [
     .optional('undefined')
     .isArray()
     .withMessage('Categories must be in array'),
-
-  body('featuredImgMedia')
-    .optional('undefined')
-    .isLength({ min: 1 })
-    .withMessage('Img path must be filled')
-    .custom((value) => {
-      if (typeof value !== 'string') {
-        throw new Error('Img path must be a string');
-      }
-      // user might not have correct img format
-      if (!value.match(/\.(jpg|jpeg|png|gif)$/)) {
-        throw new Error('Invalid image format');
-      }
-      return true;
-    })
-    .escape(),
 
   body('published').isBoolean().optional('undefined'),
 
@@ -148,10 +128,11 @@ exports.postBlog = [
       teaser,
       content,
       comments,
-      featuredImgMedia,
       categories,
       published,
     } = req.body;
+
+    const featuredImgMedia = req.file.filename;
 
     const blog = new Blog({
       owner,
@@ -243,10 +224,11 @@ exports.updateBlog = [
     .withMessage('Categories must be in array'),
 
   body('featuredImgMedia')
-    .optional('undefined')
+    .optional({ checkFalsy: true })
     .isLength({ min: 1 })
     .withMessage('Img path must be filled')
     .custom((value) => {
+      console.log(value);
       if (typeof value !== 'string') {
         throw new Error('Img path must be a string');
       }

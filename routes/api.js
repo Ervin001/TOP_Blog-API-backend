@@ -13,6 +13,8 @@ const verifyToken = require('../middleware/verifyTokenMiddleware');
 const checkAdmin = require('../middleware/checkAdminMiddleware');
 const authenticateLocal = require('../middleware/authLocalMiddleware');
 const authFromJwtMiddleware = [extractToken, verifyToken, checkAdmin];
+const upload = require('../middleware/handleImagesMiddleware');
+const checkImgPathMiddleware = require('../middleware/checkImgPathMiddleware');
 
 // -------------- Viewer Website ------------- //
 
@@ -25,7 +27,13 @@ router.get('/blogs/:blogId', blogs_controller.getBlog);
 // -------------- Viewer Website ------------- //
 
 // Create new blog
-router.post('/blogs', authFromJwtMiddleware, blogs_controller.postBlog);
+router.post(
+  '/blogs',
+  authFromJwtMiddleware,
+  upload.single('featuredImgMedia'),
+  checkImgPathMiddleware,
+  blogs_controller.postBlog
+);
 
 // Delete single blog
 router.delete(
@@ -38,6 +46,8 @@ router.delete(
 router.put(
   '/blogs/:blogId',
   authFromJwtMiddleware,
+  upload.single('featuredImgMedia'),
+  checkImgPathMiddleware,
   blogs_controller.updateBlog
 );
 
