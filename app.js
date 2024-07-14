@@ -18,6 +18,9 @@ const apiRouter = require('./routes/api');
 
 const app = express();
 
+// Enable trust proxys
+app.set('trust proxy', true);
+
 // cors
 app.use(cors());
 // rate limiter
@@ -28,8 +31,6 @@ const limiter = Ratelimit({
 });
 
 app.use(limiter);
-// Enable trust proxy
-app.set('trust proxy', true);
 
 // set up mongoose connection
 const mongoose = require('mongoose');
