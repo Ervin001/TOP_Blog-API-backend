@@ -28,6 +28,8 @@ const limiter = Ratelimit({
 });
 
 app.use(limiter);
+// Enable trust proxy
+app.set('trust proxy', true);
 
 // set up mongoose connection
 const mongoose = require('mongoose');
