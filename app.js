@@ -9,6 +9,9 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 
+//db
+const db = require('./database/queries');
+
 const corsOptions = {
   origin: process.env.ORIGIN_URI,
 };
@@ -35,6 +38,7 @@ app.use(limiter);
 // set up mongoose connection
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const { array } = require('./middleware/handleImagesMiddleware');
 mongoose.set('strictQuery', false);
 
 main().catch((err) => console.log(err));
@@ -45,28 +49,55 @@ async function main() {
 }
 
 // create admin
+// const initAdmin = async () => {
+//   try {
+//     const adminUser = await User.findOne({ email: process.env.ADMIN_EMAIL });
+//     // console.log(await db.getAdmin(process.env.ADMIN_EMAIL));
+//     console.log((await db.getAdmin('james')).includes('g'));
+
+//     if (!adminUser) {
+//       const hashedPassword = bcrypt.hashSync(process.env.ADMIN_PASSWORD);
+//       const newUser = new User({
+//         email: process.env.ADMIN_EMAIL,
+//         password: hashedPassword,
+//         name: process.env.ADMIN_NAME,
+//       });
+
+//       // add the admin role
+//       newUser.roles.push('admin');
+
+//       // save user to db
+//       await newUser.save();
+//     } else {
+//       return;
+//     }
+//   } catch (err) {
+//     console.error('Error initializing admin user', err);
+//   }
+// };
+
+// postSQL
 const initAdmin = async () => {
   try {
-    const adminUser = await User.findOne({ email: process.env.ADMIN_EMAIL });
+    const adminUser = await db.getAdmin(process.env.ADMIN_EMAIL);
+    const adminExists = adminUser.length > 0;
 
-    if (!adminUser) {
+    // if no admin user add to db
+    if (!adminExists) {
       const hashedPassword = bcrypt.hashSync(process.env.ADMIN_PASSWORD);
-      const newUser = new User({
-        email: process.env.ADMIN_EMAIL,
-        password: hashedPassword,
-        name: process.env.ADMIN_NAME,
-      });
 
-      // add the admin role
-      newUser.roles.push('admin');
-
-      // save user to db
-      await newUser.save();
+      // create admin
+      await db.createAdmin(
+        process.env.ADMIN_EMAIL,
+        hashedPassword,
+        null,
+        'admin'
+      );
     } else {
-      return;
+      console.log('Admin already exists');
     }
   } catch (err) {
-    console.error('Error initializing admin user', err);
+    console.log({ status: 'error', message: err });
   }
 };
 
