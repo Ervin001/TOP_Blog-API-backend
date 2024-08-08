@@ -5,3 +5,5 @@ class CustomNotFoundError extends Error {
     this.name = 'NotFoundError';
   }
 }
+
+module.exports = CustomNotFoundError;

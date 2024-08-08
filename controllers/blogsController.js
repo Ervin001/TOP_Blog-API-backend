@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const CustomNotFoundError = require('../helper/customNotFoundError');
+const BadRequestError = require('../helper/customBadRequest');
 
 // get blogs
 exports.getBlogs = asyncHandler(async (req, res) => {
@@ -47,17 +49,14 @@ exports.getBlog = asyncHandler(async (req, res) => {
 
   // check if Id and if it is valid
   if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'BlogId is required and must be valid',
-    });
+    throw new BadRequestError('Blog ID is required and must be valid');
   }
 
   const blog = await Blog.findById(blogId);
 
   if (!blog) {
     // incorrect id
-    res.status(404).json({ status: 'error', message: 'Blog not found' });
+    throw new CustomNotFoundError('Blog not found');
   }
 
   res.status(200).json({ status: 'success', blog });
@@ -113,7 +112,7 @@ exports.postBlog = [
         fieldErrors[error.path] = error.msg;
       });
 
-      return res.status(400).json({ status: 'error', fieldErrors });
+      throw new BadRequestError(fieldErrors);
     }
 
     // after validation passes
@@ -163,10 +162,7 @@ exports.deleteBlog = asyncHandler(async (req, res) => {
 
   // check if Id and if it is valid
   if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'BlogId is required and must be valid',
-    });
+    throw new BadRequestError('Blog ID is required and must be valid');
   }
 
   // delete blog
@@ -174,9 +170,7 @@ exports.deleteBlog = asyncHandler(async (req, res) => {
 
   // if del failed
   if (!blog) {
-    return res
-      .status(400)
-      .json({ status: 'error', message: 'Failed to delete' });
+    throw new BadRequestError('Failed to delete');
   }
 
   // all good blog deleted
@@ -253,17 +247,14 @@ exports.updateBlog = [
         fieldErrors[error.path] = error.msg;
       });
 
-      return res.status(400).json({ status: 'error', fieldErrors });
+      throw new BadRequestError(fieldErrors);
     }
     // get blog Id
     const { blogId } = req.params;
 
     // check if Id and if it is valid
     if (!blogId || !mongoose.Types.ObjectId.isValid(blogId)) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Blog is required and must be valid',
-      });
+      throw new BadRequestError(fieldErrors);
     }
 
     // object of changes
@@ -277,7 +268,7 @@ exports.updateBlog = [
 
     // if update failed
     if (!blog) {
-      res.status(400).json({ status: 'error', message: 'Failed to update' });
+      throw new BadRequestError('Failed to update');
     }
 
     res.status(201).json({
