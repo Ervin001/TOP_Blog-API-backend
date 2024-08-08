@@ -48,34 +48,6 @@ async function main() {
   initAdmin();
 }
 
-// create admin
-// const initAdmin = async () => {
-//   try {
-//     const adminUser = await User.findOne({ email: process.env.ADMIN_EMAIL });
-//     // console.log(await db.getAdmin(process.env.ADMIN_EMAIL));
-//     console.log((await db.getAdmin('james')).includes('g'));
-
-//     if (!adminUser) {
-//       const hashedPassword = bcrypt.hashSync(process.env.ADMIN_PASSWORD);
-//       const newUser = new User({
-//         email: process.env.ADMIN_EMAIL,
-//         password: hashedPassword,
-//         name: process.env.ADMIN_NAME,
-//       });
-
-//       // add the admin role
-//       newUser.roles.push('admin');
-
-//       // save user to db
-//       await newUser.save();
-//     } else {
-//       return;
-//     }
-//   } catch (err) {
-//     console.error('Error initializing admin user', err);
-//   }
-// };
-
 // postSQL
 const initAdmin = async () => {
   try {
@@ -94,11 +66,8 @@ const initAdmin = async () => {
         'admin'
       );
     } else {
-      console.log('Admin already exists');
     }
-  } catch (err) {
-    console.log({ status: 'error', message: err });
-  }
+  } catch (err) {}
 };
 
 // passport

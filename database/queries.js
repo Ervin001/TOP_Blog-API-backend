@@ -1,12 +1,14 @@
 const pool = require('./pool');
 
 async function getAdmin(adminEmail) {
-  const { rows } = await pool.query(
-    'SELECT * FROM users WHERE users.email = $1;',
-    [adminEmail]
-  );
+  try {
+    const { rows } = await pool.query(
+      'SELECT * FROM users WHERE users.email = $1;',
+      [adminEmail]
+    );
 
-  return rows;
+    return rows;
+  } catch (err) {}
 }
 
 async function createAdmin(email, password, avatar = null, roles) {
