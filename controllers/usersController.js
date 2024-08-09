@@ -3,9 +3,12 @@ const bcrypt = require('bcryptjs');
 const { body, matchedData, validationResult } = require('express-validator');
 require('dotenv').config();
 const User = require('../models/user');
+
+// custom errors
 const CustomNotFoundError = require('../helper/customNotFoundError');
 const customBadRequest = require('../helper/customBadRequest');
 const CustomConflictError = require('../helper/customConflictError');
+const CustomInternalServerError = require('../helper/customInternalServerError');
 
 // Get user
 exports.getUser = asyncHandler(async (req, res) => {
@@ -41,7 +44,7 @@ exports.postUser = [
       // check if username unique in db
       const existingUser = await User.findOne({ email: regex });
       if (existingUser) {
-        throw new Error('Email is already in use');
+        throw new CustomConflictError('Email is already in use');
       }
       return true;
     }),
@@ -65,21 +68,14 @@ exports.postUser = [
         fieldErrors[error.path] = error.msg;
       });
 
-      return res.status(400).json({
-        status: 'error',
-        message: 'Validation failed',
-        fieldErrors,
-      });
+      throw new customBadRequest(fieldErrors);
     }
 
     // everything worked
     const pssw = req.body.password;
     bcrypt.hash(pssw, +process.env.BCRYPT_SALT, async (err, hashedPassword) => {
       if (err) {
-        console.error('Error hashing password', err);
-        return res
-          .status(500)
-          .json({ status: 'error', message: 'Internal Server Error' });
+        throw new CustomInternalServerError(err);
       }
 
       // Create users
