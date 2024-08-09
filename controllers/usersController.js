@@ -3,17 +3,20 @@ const bcrypt = require('bcryptjs');
 const { body, matchedData, validationResult } = require('express-validator');
 require('dotenv').config();
 const User = require('../models/user');
+const CustomNotFoundError = require('../helper/customNotFoundError');
+const customBadRequest = require('../helper/customBadRequest');
+const CustomConflictError = require('../helper/customConflictError');
 
 // Get user
 exports.getUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
 
   // Handle case when no email)
-  if (!email) res.status(400).json({ message: 'Email is required' });
+  if (!email) throw new customBadRequest('Email is required');
 
   const user = await User.findOne({ email });
   // Incase of no user
-  if (!user) res.status(404).json({ message: 'User not found' });
+  if (!user) throw new CustomNotFoundError('User not found');
 
   res.status(200).json(user);
 });

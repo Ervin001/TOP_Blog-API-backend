@@ -22,7 +22,7 @@ const apiRouter = require('./routes/api');
 const app = express();
 
 // Enable trust proxys
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 // cors
 app.use(cors());
